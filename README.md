@@ -5,7 +5,10 @@ ArabicFixer is a PocketMine-MP plugin designed to enhance Arabic text support in
 - Supporting special cases like "الله" and "صلى" with proper Unicode replacements.
 
 # FROM
-[![E1](E1.png)]
+![E1](E1.png)
+
+# TO
+![E2](E2.png)
 
 
 
