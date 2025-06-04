@@ -1,0 +1,6 @@
+name: ArabicFixer
+version: 0.1.0
+author: MEMOxiiii
+main: MEMOxiiii\ArabicFixer\Main
+api: 5.0.0
+prefix: ArabicFix
