@@ -3,7 +3,7 @@ ArabicFixer is a PocketMine-MP plugin designed to enhance Arabic text support in
 - Correcting Arabic letter forms (initial, medial, final, isolated) based on context.
 - Reversing Arabic text to display in the correct right-to-left direction.
 - Supporting special cases like "الله" and "صلى" with proper Unicode replacements.
-
+[![Video](E1.png)]
 
 
 
