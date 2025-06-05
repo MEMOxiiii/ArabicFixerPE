@@ -1,6 +1,11 @@
 <?php
 namespace MEMOxiiii\ArabicFixer;
 
+    /**
+     * author: MEMOxiiii
+     */
+
+
 class Rule {
     public string $regex;
     public string $replacerchar;
