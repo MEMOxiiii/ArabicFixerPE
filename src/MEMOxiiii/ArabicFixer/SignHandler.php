@@ -1,6 +1,10 @@
 <?php
 namespace MEMOxiiii\ArabicFixer;
 
+    /**
+     * author: MEMOxiiii
+     */
+
 use pocketmine\event\Listener;
 use pocketmine\event\block\SignChangeEvent;
 use pocketmine\block\utils\SignText;
