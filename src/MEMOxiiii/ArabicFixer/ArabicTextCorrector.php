@@ -1,6 +1,10 @@
 <?php
 namespace MEMOxiiii\ArabicFixer;
 
+    /**
+     * author: MEMOxiiii
+     */
+
 class ArabicTextCorrector {
     private array $rules = [];
 
