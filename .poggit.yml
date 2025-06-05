@@ -5,5 +5,5 @@ branches:
 projects:
   ArabicFixerPE:
     path: ""
-    icon: E2.png
+    icon: icon.png
 ...
