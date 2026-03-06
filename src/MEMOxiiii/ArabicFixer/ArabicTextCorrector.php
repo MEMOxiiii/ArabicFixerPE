@@ -7,6 +7,10 @@ namespace MEMOxiiii\ArabicFixer;
 
 class ArabicTextCorrector {
     private array $rules = [];
+    private const ARABIC_CHAR_CLASS = '\\x{0600}-\\x{06FF}\\x{0750}-\\x{077F}\\x{08A0}-\\x{08FF}\\x{FB50}-\\x{FDFF}\\x{FE70}-\\x{FEFF}\\x{200C}\\x{200F}';
+    private const ARABIC_WORD_REGEX = '/[' . self::ARABIC_CHAR_CLASS . ']+/u';
+    private const ARABIC_FULL_TEXT_REGEX = '/^[\s' . self::ARABIC_CHAR_CLASS . ']+$/u';
+    private const ARABIC_PHRASE_REGEX = '/(?:[' . self::ARABIC_CHAR_CLASS . ']+(?:\s+[' . self::ARABIC_CHAR_CLASS . ']+)*)/u';
 
     public function __construct() {
         $nonJoinerLetters = "ﺬآداﺇﺁﺃﺎﺈﺂﺄرﺮزﺰژﮋذﺲﺶﺺﺾوﭗﺚﺖﺞﭻﺢﺦﺐﻂﻆﻊﻎﻒﻖﮏﮓﻚﻞﻢﻦﻮﻪﻰﺊﻲﺪﻼﻻﻺﻹﻶﻵﻸﻷﷺﷲﺔﻪﺅ";
@@ -122,18 +126,41 @@ class ArabicTextCorrector {
     }
 
     public function correctArabicText(string $text): string {
-        if (preg_match("/^[\x{0600}-\x{06FF}\x{FB8A}\x{067E}\x{0686}\x{06AF}\x{200C}\x{200F} ]+$/u", $text)) {
-            foreach ($this->rules as $rule) {
-                $text = preg_replace("/" . $rule->regex . "/u", $rule->replacerchar, $text);
-            }
-
-            $reversed = '';
-            $textArray = mb_str_split($text);
-            for ($i = count($textArray) - 1; $i >= 0; $i--) {
-                $reversed .= $textArray[$i];
-            }
-            return $reversed;
+        if (!preg_match(self::ARABIC_WORD_REGEX, $text)) {
+            return $text;
         }
-        return $text;
+
+        if (preg_match(self::ARABIC_FULL_TEXT_REGEX, $text) === 1) {
+            return preg_replace_callback(
+                self::ARABIC_PHRASE_REGEX,
+                function (array $matches): string {
+                    return $this->correctArabicPhrase($matches[0]);
+                },
+                $text
+            ) ?? $text;
+        }
+
+        // In mixed lines (rank/prefix + Arabic), reversing each Arabic word keeps sentence order stable.
+        return preg_replace_callback(
+            self::ARABIC_WORD_REGEX,
+            function (array $matches): string {
+                return $this->correctArabicPhrase($matches[0]);
+            },
+            $text
+        ) ?? $text;
+    }
+
+    private function correctArabicPhrase(string $text): string {
+        foreach ($this->rules as $rule) {
+            $text = preg_replace("/" . $rule->regex . "/u", $rule->replacerchar, $text) ?? $text;
+        }
+
+        $reversed = '';
+        $textArray = mb_str_split($text);
+        for ($i = count($textArray) - 1; $i >= 0; $i--) {
+            $reversed .= $textArray[$i];
+        }
+
+        return $reversed;
     }
 }

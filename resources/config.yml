@@ -1,0 +1,5 @@
+# Enable or disable Arabic correction for player chat.
+chat-enabled: true
+
+# Enable or disable Arabic correction for sign text.
+sign-enabled: true

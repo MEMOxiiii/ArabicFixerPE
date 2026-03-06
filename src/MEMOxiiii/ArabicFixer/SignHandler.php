@@ -11,12 +11,18 @@ use pocketmine\block\utils\SignText;
 
 class SignHandler implements Listener {
     private ArabicTextCorrector $corrector;
+    private bool $enabled;
 
-    public function __construct(ArabicTextCorrector $corrector) {
+    public function __construct(ArabicTextCorrector $corrector, bool $enabled = true) {
         $this->corrector = $corrector;
+        $this->enabled = $enabled;
     }
 
     public function onSignChange(SignChangeEvent $event): void {
+        if (!$this->enabled) {
+            return;
+        }
+
         $signText = $event->getNewText();
         $lines = $signText->getLines();
         $correctedLines = [];

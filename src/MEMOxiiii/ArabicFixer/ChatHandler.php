@@ -3,7 +3,6 @@ namespace MEMOxiiii\ArabicFixer;
 
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerChatEvent;
-use pocketmine\Server;
 
     /**
      * author: MEMOxiiii
@@ -11,28 +10,25 @@ use pocketmine\Server;
 
 class ChatHandler implements Listener {
     private ArabicTextCorrector $corrector;
+    private bool $enabled;
 
-    public function __construct(ArabicTextCorrector $corrector) {
+    public function __construct(ArabicTextCorrector $corrector, bool $enabled = true) {
         $this->corrector = $corrector;
+        $this->enabled = $enabled;
     }
 
     public function onChat(PlayerChatEvent $event): void {
-        $player = $event->getPlayer();
+        if (!$this->enabled) {
+            return;
+        }
+
         $originalMessage = $event->getMessage();
-
-        Server::getInstance()->getLogger()->info("<{$player->getName()}> {$originalMessage}");
-
         $correctedMessage = $this->corrector->correctArabicText($originalMessage);
 
-        $event->setMessage($correctedMessage);
-
-        $recipients = $event->getRecipients();
-        $event->setRecipients([]);
-
-        foreach ($recipients as $recipient) {
-            if ($recipient instanceof \pocketmine\player\Player) {
-                $recipient->sendMessage("<{$player->getName()}> {$correctedMessage}");
-            }
+        if ($correctedMessage === $originalMessage) {
+            return;
         }
+
+        $event->setMessage($correctedMessage);
     }
 }
